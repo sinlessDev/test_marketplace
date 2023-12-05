@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
+import useSortedProducts from "./lib/useSortedProducts";
 interface Product {
   brand: string;
   category: string;
@@ -22,83 +23,80 @@ interface ProductListResponse {
   total: number;
 }
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+type FunctionType = (...args: any[]) => void;
 
-const debounce = (func, delay) => {
-  let timeoutId;
-  return function (...args) {
-    clearTimeout(timeoutId);
+const debounce = (func: FunctionType, delay: number): FunctionType => {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return function (...args: any[]) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     timeoutId = setTimeout(() => func(...args), delay);
   };
 };
+
+const PRODUCTS_API = "https://dummyjson.com/products";
+const PRODUCTS_CATEGORIES_API = `${PRODUCTS_API}/categories`;
+
+const fetchApi = async (url: string) => {
+  try {
+    const response = await fetch(url);
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching from ${url}:`, error);
+  }
+};
+
 export default function Store() {
   const [products, setProducts] = useState<ProductListResponse | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
+  const [sortCriteria, setSortCriteria] = useState("price");
+  const [sortOrder, setSortOrder] = useState("asc");
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("https://dummyjson.com/products/");
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch("https://dummyjson.com/products/categories");
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-    fetchProducts();
-  }, []);
-
-  const fetchProductsByCategory = async (category: string) => {
-    try {
-      const response = await fetch(
-        `https://dummyjson.com/products/category/${category}`
-      );
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products by category:", error);
-    }
-  };
+  const sortedProducts: ProductListResponse = useSortedProducts(
+    products,
+    sortCriteria,
+    sortOrder
+  );
 
   const debouncedSearch = useCallback(
     debounce(async (term: string) => {
-      try {
-        let url = "https://dummyjson.com/products/";
-        // If searchTerm is not empty, modify the URL to include the search query
-        if (term !== "") {
-          url = `https://dummyjson.com/products/search?q=${term}`;
-        }
-
-        const response = await fetch(url);
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error:", error);
-      }
+      const url =
+        term !== "" ? `${PRODUCTS_API}/search?q=${term}` : PRODUCTS_API;
+      const data = await fetchApi(url);
+      setProducts(data);
     }, 500),
     []
   );
+  useEffect(() => {
+    fetchApi(PRODUCTS_CATEGORIES_API).then(setCategories);
+    fetchApi(PRODUCTS_API).then(setProducts);
+  }, []);
 
   useEffect(() => {
     if (searchTerm) {
       debouncedSearch(searchTerm);
     }
-  }, [searchTerm, debouncedSearch]);
+  }, [debouncedSearch, searchTerm]);
+
+  const handleSortCriteriaChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setSortCriteria(e.target.value);
+  };
+
+  const handleSortOrderChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setSortOrder(e.target.value);
+  };
+
+  const fetchProductsByCategory = async (category: string) => {
+    const data = await fetchApi(`${PRODUCTS_API}/category/${category}`);
+    setProducts(data);
+  };
 
   return (
     <div className="bg-white">
@@ -108,6 +106,22 @@ export default function Store() {
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               All products
             </h1>
+            <label>
+              Sort By:
+              <select value={sortCriteria} onChange={handleSortCriteriaChange}>
+                <option value="price">Price</option>
+                <option value="rating">Rating</option>
+              </select>
+            </label>
+
+            <label>
+              Order:
+              <select value={sortOrder} onChange={handleSortOrderChange}>
+                <option value="asc">By ascending order</option>
+                <option value="desc">By descending order</option>
+              </select>
+            </label>
+
             <div className="flex justify-between">
               <p className="mt-4 text-base text-gray-500">
                 Checkout out the latest release of Basic Tees, new and improved
@@ -158,8 +172,9 @@ export default function Store() {
               </h2>
 
               <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
-                {products?.products && products.products.length > 0 ? (
-                  products?.products.map((product) => (
+                {sortedProducts?.products &&
+                sortedProducts.products.length > 0 ? (
+                  sortedProducts?.products.map((product) => (
                     <div
                       key={product.id}
                       className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
@@ -186,13 +201,15 @@ export default function Store() {
                         </p>
                         <div className="flex flex-1 flex-col justify-end">
                           <p className="text-base font-medium text-gray-900">
-                            {product.price}
+                            {product.price} $
                           </p>
+                          <p> {product.rating}</p>
                         </div>
                       </div>
                     </div>
                   ))
-                ) : products?.products && products.products.length === 0 ? (
+                ) : sortedProducts?.products &&
+                  sortedProducts.products.length === 0 ? (
                   <div className="text-center py-10">
                     <h2 className="text-lg font-semibold text-gray-900">
                       Sorry, nothing found
