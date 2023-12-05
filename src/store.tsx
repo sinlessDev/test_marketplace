@@ -2,6 +2,8 @@ import { SetStateAction, useCallback, useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import useSortedProducts from "./lib/useSortedProducts";
+import { Link } from "react-router-dom";
+
 interface Product {
   brand: string;
   category: string;
@@ -188,13 +190,13 @@ export default function Store() {
                       </div>
                       <div className="flex flex-1 flex-col space-y-2 p-4">
                         <h3 className="text-sm font-medium text-gray-900">
-                          <a href="#">
+                          <Link to={`/store/${product.id}`} state={{ product }}>
                             <span
                               aria-hidden="true"
                               className="absolute inset-0"
                             />
                             {product.title}
-                          </a>
+                          </Link>
                         </h3>
                         <p className="text-sm text-gray-500">
                           {product.description}
