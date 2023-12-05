@@ -1,4 +1,3 @@
-import { Fragment, useEffect, useState } from "react";
 import {
   Dialog,
   Disclosure,
@@ -6,14 +5,16 @@ import {
   Tab,
   Transition,
 } from "@headlessui/react";
+import { ChevronDownIcon, PlusIcon } from "@heroicons/react/20/solid";
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { ChevronDownIcon, PlusIcon } from "@heroicons/react/20/solid";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Input } from "./components/ui/input";
+import { Button } from "./components/ui/button";
 interface Product {
   brand: string;
   category: string;
@@ -165,43 +166,6 @@ const navigation = {
   ],
 };
 const breadcrumbs = [{ id: 1, name: "Men", href: "#" }];
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White" },
-      { value: "beige", label: "Beige" },
-      { value: "blue", label: "Blue" },
-      { value: "brown", label: "Brown" },
-      { value: "green", label: "Green" },
-      { value: "purple", label: "Purple" },
-    ],
-  },
-  {
-    id: "category",
-    name: "Category",
-    options: [
-      { value: "new-arrivals", label: "All New Arrivals" },
-      { value: "tees", label: "Tees" },
-      { value: "crewnecks", label: "Crewnecks" },
-      { value: "sweatshirts", label: "Sweatshirts" },
-      { value: "pants-shorts", label: "Pants & Shorts" },
-    ],
-  },
-  {
-    id: "sizes",
-    name: "Sizes",
-    options: [
-      { value: "xs", label: "XS" },
-      { value: "s", label: "S" },
-      { value: "m", label: "M" },
-      { value: "l", label: "L" },
-      { value: "xl", label: "XL" },
-      { value: "2xl", label: "2XL" },
-    ],
-  },
-];
 
 const footerNavigation = {
   products: [
@@ -234,25 +198,66 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+const debounce = (func, delay) => {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
 export default function Store() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const [productsList, setProductsList] = useState<ProductListResponse | null>(
-    null
+  const [products, setProducts] = useState<ProductListResponse | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("https://dummyjson.com/products/categories");
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchProductsByCategory = async (category: string) => {
+    try {
+      const response = await fetch(
+        `https://dummyjson.com/products/category/${category}`
+      );
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  const debouncedSearch = useCallback(
+    debounce(async (term: string) => {
+      try {
+        const response = await fetch(
+          `https://dummyjson.com/products/search?q=${term}`
+        );
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error searching products:", error);
+      }
+    }, 1000),
+    []
   );
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((res) => res.json())
-      .then((data) => {
-        setProductsList(data); // Set the state after fetch is done
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-  console.log(productsList);
+    if (searchTerm) {
+      debouncedSearch(searchTerm);
+    }
+  }, [searchTerm, debouncedSearch]);
 
   return (
     <div className="bg-white">
@@ -673,7 +678,7 @@ export default function Store() {
                   </div>
 
                   {/* Filters */}
-                  <form className="mt-4">
+                  {/* <form className="mt-4">
                     {filters.map((section) => (
                       <Disclosure
                         as="div"
@@ -726,7 +731,7 @@ export default function Store() {
                         )}
                       </Disclosure>
                     ))}
-                  </form>
+                  </form> */}
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -784,7 +789,12 @@ export default function Store() {
                 Checkout out the latest release of Basic Tees, new and improved
                 with four openings!
               </p>
-              <Input type="text" placeholder="Search ..." className="w-fit" />
+              <Input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
 
@@ -807,18 +817,22 @@ export default function Store() {
               </button>
 
               <div className="hidden lg:block">
-                <form className="space-y-10 divide-y divide-gray-200">
-                  {filters.map((section, sectionIdx) => (
+                <div className="space-y-10 divide-y divide-gray-200">
+                  {categories.map((category, sectionIdx) => (
                     <div
-                      key={section.name}
+                      key={category}
                       className={sectionIdx === 0 ? null : "pt-10"}
                     >
                       <fieldset>
-                        <legend className="block text-sm font-medium text-gray-900">
-                          {section.name}
-                        </legend>
+                        <Button
+                          variant="link"
+                          onClick={() => fetchProductsByCategory(category)}
+                          className="block text-sm font-medium text-gray-900"
+                        >
+                          {category}
+                        </Button>
                         <div className="space-y-3 pt-6">
-                          {section.options.map((option, optionIdx) => (
+                          {/* {section.options.map((option, optionIdx) => (
                             <div
                               key={option.value}
                               className="flex items-center"
@@ -837,12 +851,12 @@ export default function Store() {
                                 {option.label}
                               </label>
                             </div>
-                          ))}
+                          ))} */}
                         </div>
                       </fieldset>
                     </div>
                   ))}
-                </form>
+                </div>
               </div>
             </aside>
 
@@ -855,7 +869,7 @@ export default function Store() {
               </h2>
 
               <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3">
-                {productsList?.products.map((product) => (
+                {products?.products.map((product) => (
                   <div
                     key={product.id}
                     className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
