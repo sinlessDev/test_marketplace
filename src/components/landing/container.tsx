@@ -1,4 +1,4 @@
-const Container = (props) => {
+const Container = (props: any) => {
   return (
     <div
       className={`max-w-7xl p-8 mx-auto xl:px-0 ${
