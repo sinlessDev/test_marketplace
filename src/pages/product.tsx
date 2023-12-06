@@ -1,7 +1,7 @@
 import { StarIcon } from "@heroicons/react/20/solid";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { addItem } from "./redux/cart/slice";
+import { addItem } from "../redux/cart/slice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

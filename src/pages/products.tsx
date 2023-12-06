@@ -1,7 +1,7 @@
 import { SetStateAction, useCallback, useEffect, useState } from "react";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import useSortedProducts from "./lib/useSortedProducts";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import useSortedProducts from "../lib/useSortedProducts";
 import { Link } from "react-router-dom";
 
 interface Product {
