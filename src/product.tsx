@@ -1,5 +1,7 @@
 import { StarIcon } from "@heroicons/react/20/solid";
-import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { addItem } from "./redux/cart/slice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -7,6 +9,15 @@ function classNames(...classes) {
 
 export default function Product() {
   const { state } = useLocation();
+  const dispatch = useDispatch();
+  const onClickAdd = () => {
+    dispatch(addItem(state.product));
+  };
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    // Navigate to the "cart" page
+    navigate("/cart");
+  };
 
   return (
     <div className="bg-white">
@@ -19,7 +30,7 @@ export default function Product() {
             <li>
               <div className="flex items-center">
                 <a
-                  href={"/store"}
+                  href={"/products"}
                   className="mr-2 text-sm font-medium text-gray-900"
                 >
                   store
@@ -131,14 +142,18 @@ export default function Product() {
               </div>
             </div>
 
-            <form className="mt-10">
-              <button
-                type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add to bag
-              </button>
-            </form>
+            <button
+              onClick={onClickAdd}
+              className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Add to bag
+            </button>
+            <button
+              onClick={handleNavigate}
+              className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Add to bag
+            </button>
           </div>
 
           <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">

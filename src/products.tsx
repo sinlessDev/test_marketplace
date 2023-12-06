@@ -190,7 +190,10 @@ export default function Store() {
                       </div>
                       <div className="flex flex-1 flex-col space-y-2 p-4">
                         <h3 className="text-sm font-medium text-gray-900">
-                          <Link to={`/store/${product.id}`} state={{ product }}>
+                          <Link
+                            to={`/products/${product.id}`}
+                            state={{ product }}
+                          >
                             <span
                               aria-hidden="true"
                               className="absolute inset-0"
