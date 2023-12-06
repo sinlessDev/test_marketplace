@@ -110,27 +110,27 @@ export default function Store() {
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               All products
             </h1>
-            <label>
-              Sort By:
-              <select value={sortCriteria} onChange={handleSortCriteriaChange}>
-                <option value="price">Price</option>
-                <option value="rating">Rating</option>
-              </select>
-            </label>
 
-            <label>
-              Order:
-              <select value={sortOrder} onChange={handleSortOrderChange}>
-                <option value="asc">By ascending order</option>
-                <option value="desc">By descending order</option>
-              </select>
-            </label>
+            <div className="flex justify-end items-center">
+              <label>
+                Sort By:
+                <select
+                  value={sortCriteria}
+                  onChange={handleSortCriteriaChange}
+                >
+                  <option value="price">Price</option>
+                  <option value="rating">Rating</option>
+                </select>
+              </label>
 
-            <div className="flex justify-between">
-              <p className="mt-4 text-base text-gray-500">
-                Checkout out the latest release of Basic Tees, new and improved
-                with four openings!
-              </p>
+              <label>
+                Order:
+                <select value={sortOrder} onChange={handleSortOrderChange}>
+                  <option value="asc">By ascending order</option>
+                  <option value="desc">By descending order</option>
+                </select>
+              </label>
+
               <Input
                 type="text"
                 placeholder="Search products..."

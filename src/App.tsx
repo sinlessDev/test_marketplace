@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Cart from "./pages/cart";
-import Landing from "./components/landing/landing";
+import Landing from "./pages/landing";
 import Product from "./pages/product";
 import Products from "./pages/products";
 
