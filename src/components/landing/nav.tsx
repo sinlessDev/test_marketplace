@@ -1,5 +1,3 @@
-import Container from "./container";
-
 const Navbar = () => {
   const navigation = ["Product", "Features", "Pricing", "Company", "Blog"];
 

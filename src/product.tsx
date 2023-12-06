@@ -1,5 +1,5 @@
 import { StarIcon } from "@heroicons/react/20/solid";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addItem } from "./redux/cart/slice";
 

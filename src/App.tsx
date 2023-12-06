@@ -1,8 +1,8 @@
-import React, { Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
 
-import Layout from "./components/landing/landing";
 import Cart from "./cart";
+import Layout from "./components/landing/landing";
 import Product from "./product";
 import Products from "./products";
 

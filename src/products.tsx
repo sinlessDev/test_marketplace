@@ -58,6 +58,8 @@ export default function Store() {
   const [sortOrder, setSortOrder] = useState("asc");
 
   const sortedProducts: ProductListResponse = useSortedProducts(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     products,
     sortCriteria,
     sortOrder
