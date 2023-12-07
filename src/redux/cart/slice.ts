@@ -3,42 +3,49 @@ import { calcTotalPrice } from "../../lib/calcTotalPrice";
 import { getCartFromLS } from "../../lib/getCartFromLS";
 import { CartItem, CartSliceState } from "./types";
 
-const initialState: CartSliceState = getCartFromLS();
+const initialState: CartSliceState = getCartFromLS() || {
+  totalPrice: 0,
+  items: [],
+};
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItem(state, action: PayloadAction<CartItem>) {
-      const findItem = state.items.find((obj) => obj.id === action.payload.id);
-      if (findItem) {
-        findItem.count++;
+    addItem: (state, action: PayloadAction<CartItem>) => {
+      const existingItem = state.items.find(
+        (item) => item.id === action.payload.id
+      );
+      if (existingItem) {
+        existingItem.count++;
       } else {
-        state.items.push({
-          ...action.payload,
-          count: 1,
-        });
+        state.items.push({ ...action.payload, count: 1 });
       }
-
       state.totalPrice = calcTotalPrice(state.items);
     },
 
-    minusItem(state, action: PayloadAction<string>) {
-      const findItem = state.items.find((obj) => obj.id === action.payload);
-
-      if (findItem) {
-        findItem.count--;
+    minusItem: (state, action: PayloadAction<number>) => {
+      const existingItem = state.items.find(
+        (item) => item.id === action.payload
+      );
+      if (existingItem) {
+        if (existingItem.count > 1) {
+          existingItem.count--;
+        } else {
+          state.items = state.items.filter(
+            (item) => item.id !== action.payload
+          );
+        }
       }
-
       state.totalPrice = calcTotalPrice(state.items);
     },
 
-    removeItem(state, action: PayloadAction<string>) {
-      state.items = state.items.filter((obj) => obj.id !== action.payload);
+    removeItem: (state, action: PayloadAction<number>) => {
+      state.items = state.items.filter((item) => item.id !== action.payload);
       state.totalPrice = calcTotalPrice(state.items);
     },
 
-    clearItems(state) {
+    clearItems: (state) => {
       state.items = [];
       state.totalPrice = 0;
     },

@@ -2,6 +2,9 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { addItem } from "../redux/cart/slice";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/header";
+import Container from "@/components/landing/container";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -13,15 +16,17 @@ export default function Product() {
   const onClickAdd = () => {
     dispatch(addItem(state.product));
   };
+
   const navigate = useNavigate();
+
   const handleNavigate = () => {
-    // Navigate to the "cart" page
     navigate("/cart");
   };
 
   return (
-    <div className="bg-white">
-      <main className="pt-10 sm:pt-16">
+    <Container>
+      <Header />
+      <main>
         <nav aria-label="Breadcrumb">
           <ol
             role="list"
@@ -142,18 +147,12 @@ export default function Product() {
               </div>
             </div>
 
-            <button
-              onClick={onClickAdd}
-              className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Add to bag
-            </button>
-            <button
-              onClick={handleNavigate}
-              className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              Add to bag
-            </button>
+            <div className="flex gap-3 mt-4">
+              <Button onClick={onClickAdd}>Add to Cart</Button>
+              <Button onClick={handleNavigate} variant="secondary">
+                Go to Cart
+              </Button>
+            </div>
           </div>
 
           <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
@@ -169,6 +168,6 @@ export default function Product() {
           </div>
         </div>
       </main>
-    </div>
+    </Container>
   );
 }

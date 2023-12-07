@@ -1,18 +1,11 @@
-import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
 
 export default function Signin() {
-  const { user, loginUser } = useAuth();
-  const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const loginForm = useRef(null);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,12 +32,12 @@ export default function Signin() {
             </h2>
             <p className="mt-2 text-sm leading-6 text-gray-500">
               Not a member?{" "}
-              <a
-                href="#"
+              <Link
+                to="/signup"
                 className="font-semibold text-indigo-600 hover:text-indigo-500"
               >
-                Start a 14 day free trial
-              </a>
+                Sign Up
+              </Link>
             </p>
           </div>
 

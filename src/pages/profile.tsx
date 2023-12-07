@@ -1,3 +1,15 @@
+import Header from "@/components/header";
+import Container from "@/components/landing/container";
+import { useAuth } from "../lib/authContext";
+
 export default function Profile() {
-  return <div>Profile</div>;
+  const { user } = useAuth();
+  return (
+    <div>
+      <Container>
+        <Header />
+        <div>{user?.name}</div>
+      </Container>
+    </div>
+  );
 }

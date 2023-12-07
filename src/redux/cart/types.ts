@@ -1,9 +1,16 @@
 export type CartItem = {
-  id: string;
-  title: string;
-  price: number;
-  imageUrl: string;
+  id: number;
+  brand: string;
+  category: string;
   count: number;
+  description: string;
+  discountPercentage: number;
+  images: string[];
+  price: number;
+  rating: number;
+  stock: number;
+  thumbnail: string;
+  title: string;
 };
 
 export interface CartSliceState {
