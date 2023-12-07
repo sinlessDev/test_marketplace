@@ -118,13 +118,13 @@ export default function Store() {
               All products
             </h1>
 
-            <div className="flex justify-end items-center">
-              <div className="flex gap-8 mr-4">
+            <div className="flex  justify-end items-center">
+              <div className="flex flex-col sm:flex-row sm:gap-8 mr-4 gap-4">
                 <Select
                   value={sortCriteria}
                   onValueChange={handleSortCriteriaChange}
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[201px]">
                     <SelectValue placeholder="Theme" />
                   </SelectTrigger>
                   <SelectContent>
@@ -132,9 +132,8 @@ export default function Store() {
                     <SelectItem value="rating">Rating</SelectItem>
                   </SelectContent>
                 </Select>
-
                 <Select value={sortOrder} onValueChange={handleSortOrderChange}>
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[201px]">
                     <SelectValue placeholder="Theme" />
                   </SelectTrigger>
                   <SelectContent>
@@ -142,14 +141,14 @@ export default function Store() {
                     <SelectItem value="desc">Descending</SelectItem>
                   </SelectContent>
                 </Select>
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  className="w-fit"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                className="w-fit"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
             </div>
           </div>
 

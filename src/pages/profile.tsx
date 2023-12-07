@@ -9,7 +9,7 @@ export default function Profile() {
     <div>
       <Container>
         <Header />
-        <div className="flex gap-20">
+        <div className="grid grid-cols-1 gap-10 sm:gap-0 sm:grid-cols-3">
           <div className="border w-fit rounded-lg p-10">
             <img src={ImagePlaceholder} alt="ava" className=" w-56 h-56" />
           </div>
