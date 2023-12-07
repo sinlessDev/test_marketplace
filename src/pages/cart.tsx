@@ -1,6 +1,6 @@
 import { selectCart } from "@/redux/cart/selectors";
 import { CheckIcon, ClockIcon } from "@heroicons/react/20/solid";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const products = [
   {
@@ -32,20 +32,20 @@ const products = [
 ];
 
 export default function Example() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const { totalPrice, items } = useSelector(selectCart);
+  const { totalPrice } = useSelector(selectCart);
 
-  const totalCount = items.reduce(
-    (sum: number, item: any) => sum + item.count,
-    0
-  );
+  // const totalCount = items.reduce(
+  //   (sum: number, item: any) => sum + item.count,
+  //   0
+  // );
 
-  const onClickClear = () => {
-    if (window.confirm("Очистить корзину?")) {
-      dispatch(clearItems());
-    }
-  };
+  // const onClickClear = () => {
+  //   if (window.confirm("Очистить корзину?")) {
+  //     dispatch(clearItems());
+  //   }
+  // };
 
   if (!totalPrice) {
     return "nothing";

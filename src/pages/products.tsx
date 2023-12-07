@@ -1,9 +1,17 @@
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import Header from "@/components/header";
+import Container from "@/components/landing/container";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import useSortedProducts from "../lib/useSortedProducts";
-import { Link } from "react-router-dom";
-import Header from "@/components/header";
 
 interface Product {
   brand: string;
@@ -86,16 +94,12 @@ export default function Store() {
     }
   }, [debouncedSearch, searchTerm]);
 
-  const handleSortCriteriaChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setSortCriteria(e.target.value);
+  const handleSortCriteriaChange = (value: string) => {
+    setSortCriteria(value);
   };
 
-  const handleSortOrderChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setSortOrder(e.target.value);
+  const handleSortOrderChange = (value: string) => {
+    setSortOrder(value);
   };
 
   const fetchProductsByCategory = async (category: string) => {
@@ -105,34 +109,40 @@ export default function Store() {
 
   return (
     <div className="bg-white">
-      <Header />
       <div>
-        <main className="mx-auto max-w-2xl px-4 lg:max-w-7xl lg:px-8">
-          <div className="border-b border-gray-200 pb-10 pt-24">
+        <Container>
+          <Header />
+
+          <div className="border-b border-gray-200 pb-10">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
               All products
             </h1>
 
             <div className="flex justify-end items-center">
-              <label>
-                Sort By:
-                <select
+              <div className="flex gap-8 mr-4">
+                <Select
                   value={sortCriteria}
-                  onChange={handleSortCriteriaChange}
+                  onValueChange={handleSortCriteriaChange}
                 >
-                  <option value="price">Price</option>
-                  <option value="rating">Rating</option>
-                </select>
-              </label>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="price">Price</SelectItem>
+                    <SelectItem value="rating">Rating</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <label>
-                Order:
-                <select value={sortOrder} onChange={handleSortOrderChange}>
-                  <option value="asc">By ascending order</option>
-                  <option value="desc">By descending order</option>
-                </select>
-              </label>
-
+                <Select value={sortOrder} onValueChange={handleSortOrderChange}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">Ascending</SelectItem>
+                    <SelectItem value="desc">Descending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <Input
                 type="text"
                 placeholder="Search products..."
@@ -255,7 +265,7 @@ export default function Store() {
               </div>
             </section>
           </div>
-        </main>
+        </Container>
       </div>
     </div>
   );

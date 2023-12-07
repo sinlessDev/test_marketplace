@@ -172,7 +172,7 @@
 //   );
 // }
 
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
 
@@ -182,6 +182,11 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!registerForm.current) {
+      console.error("Form is not initialized");
+      return;
+    }
 
     const name = registerForm.current.name.value;
     const email = registerForm.current.email.value;
