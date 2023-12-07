@@ -1,5 +1,8 @@
+import CartEmpty from "@/components/cart/CartEmpty";
 import { CartItem } from "@/components/cart/CartItem";
 import Header from "@/components/header";
+import Container from "@/components/landing/container";
+import { Button } from "@/components/ui/button";
 import { selectCart } from "@/redux/cart/selectors";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -9,12 +12,6 @@ export default function Example() {
 
   const { totalPrice, items } = useSelector(selectCart);
 
-  // console.log(items);
-  // const totalCount = items.reduce(
-  //   (sum: number, item: any) => sum + item.count,
-  //   0
-  // );
-
   // const onClickClear = () => {
   //   if (window.confirm("Очистить корзину?")) {
   //     dispatch(clearItems());
@@ -22,14 +19,14 @@ export default function Example() {
   // };
 
   if (!totalPrice) {
-    return "nothing";
+    return <CartEmpty />;
   }
 
   return (
-    <div className="bg-white">
+    <Container>
       <Header></Header>
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-0">
-        <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-0">
+        <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">
           Shopping Cart
         </h1>
 
@@ -61,8 +58,7 @@ export default function Example() {
                   Subtotal
                 </dt>
                 <dd className="ml-4 text-base font-medium text-gray-900">
-                  {/* Calculate subtotal here */}
-                  $96.00
+                  {totalPrice} $
                 </dd>
               </div>
             </dl>
@@ -71,13 +67,8 @@ export default function Example() {
             </p>
           </div>
 
-          <div className="mt-10">
-            <button
-              type="submit"
-              className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-            >
-              Checkout
-            </button>
+          <div className="mt-10 flex justify-end">
+            <Button type="submit">Checkout</Button>
           </div>
 
           <div className="mt-6 text-center text-sm">
@@ -91,6 +82,6 @@ export default function Example() {
           </div>
         </section>
       </div>
-    </div>
+    </Container>
   );
 }
